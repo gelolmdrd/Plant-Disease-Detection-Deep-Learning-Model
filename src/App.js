@@ -5,37 +5,24 @@ import { loadLayersModel, browserFromLocalStorage } from '@tensorflow/tfjs';
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedPlant, setSelectedPlant] = useState('');
   const [prediction, setPrediction] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedImage, setUploadedImage] = useState(null);
+  const [isClearHovered, setIsClearHovered] = useState(false);
 
   const handleFileInputChange = (event) => {
     setSelectedFile(event.target.files[0]);
     setUploadedImage(URL.createObjectURL(event.target.files[0]));
   };
 
-  const handlePredictClick = async () => {
-    if (selectedFile) {
-      setIsLoading(true);
-
-      const model = await loadModel();
-      if (model) {
-        const image = await preprocessImage(selectedFile);
-        const predictions = await predict(model, image);
-        setPrediction(predictions);
-      } else {
-        setPrediction('Error occurred during model loading.');
-      }
-
-      setIsLoading(false);
-    } else {
-      setPrediction('Please select an image.');
-    }
+  const handlePlantChange = (event) => {
+    setSelectedPlant(event.target.value);
   };
 
-  const loadModel = async () => {
+  const loadModel = async (selectedPlant) => {
     try {
-      const model = await loadLayersModel('best-model.h5');
+      const model = await loadLayersModel(`/public/${selectedPlant}_Model.h5`);
       return model;
     } catch (error) {
       console.error('Error occurred while loading the model:', error);
@@ -51,28 +38,33 @@ function App() {
         image.onload = () => {
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
-
-          // Calculate the new dimensions to maintain 3:4 aspect ratio
+  
+          // Calculate the new dimensions while maintaining the aspect ratio
           const maxWidth = 400;
           const maxHeight = 533;
           let width = image.width;
           let height = image.height;
-
-          if (width > maxWidth) {
-            height *= maxWidth / width;
-            width = maxWidth;
+  
+          const aspectRatio = width / height;
+          if (width > maxWidth || height > maxHeight) {
+            if (width / maxWidth > height / maxHeight) {
+              width = maxWidth;
+              height = width / aspectRatio;
+            } else {
+              height = maxHeight;
+              width = height * aspectRatio;
+            }
           }
-
-          if (height > maxHeight) {
-            width *= maxHeight / height;
-            height = maxHeight;
-          }
-
+  
+          // Calculate the offset to center the image
+          const offsetX = (maxWidth - width) / 2;
+          const offsetY = (maxHeight - height) / 2;
+  
           // Set the canvas dimensions and draw the resized image
-          canvas.width = width;
-          canvas.height = height;
-          ctx.drawImage(image, 0, 0, width, height);
-
+          canvas.width = maxWidth;
+          canvas.height = maxHeight;
+          ctx.drawImage(image, offsetX, offsetY, width, height);
+  
           // Convert the canvas image to a tensor
           const tensor = tf.browser.fromPixels(canvas).expandDims();
           resolve(tensor);
@@ -108,29 +100,88 @@ function App() {
     };
   }, [uploadedImage]);
 
+  const handlePredictClick = async () => {
+    if (selectedFile && selectedPlant) {
+      setIsLoading(true);
+
+      const model = await loadModel(selectedPlant);
+      if (model) {
+        const image = await preprocessImage(selectedFile);
+        const predictions = await predict(model, image);
+        setPrediction(predictions);
+      } else {
+        setPrediction('Error occurred during model loading.');
+      }
+
+      setIsLoading(false);
+    } else {
+      setPrediction('Please select an image and a plant.');
+    }
+  };
+
+  const handleClearClick = () => {
+    setSelectedFile(null);
+    setSelectedPlant('');
+    setPrediction('');
+    setUploadedImage(null);
+    const fileInput = document.getElementById('file-input');
+    if (fileInput) {
+      fileInput.value = ''; // Clear the input value
+      fileInput.type = 'text'; // Change the input type temporarily to allow resetting the value
+      fileInput.type = 'file'; // Reset the input type to file
+    }
+  };
+
+  const handleClearHover = (isHovered) => {
+    setIsClearHovered(isHovered);
+  };
+
   return (
     <div className="container">
-      <h1 className="title">Plant Disease Detection</h1>
-        <input
-          type="file"
-          className="file-input"
-          accept="image/*"       
-          onChange={handleFileInputChange}
-        />
-    {selectedFile && (
-      <div className="image-container">
-        <img src={uploadedImage} alt="Uploaded" className="uploaded-image" />
-      </div>
-    )}
+    <h1 className="title">Plant Disease Detection</h1>
+    <div className="dropdown">
+      <select value={selectedPlant} onChange={handlePlantChange}>
+        <option value="">Select a plant</option>
+        <option value="Potato">Potato</option>
+        <option value="Cotton">Cotton</option>
+        <option value="Tomato">Tomato</option>
+      </select>
+    </div>
+    <input
+      type="file"
+      id="file-input" // Add the id attribute
+      className="file-input"
+      accept="image/*"
+      onChange={handleFileInputChange}
+    />
+      {selectedFile && (
+        <div className="image-container">
+          <img src={uploadedImage} alt="Uploaded" className="uploaded-image" />
+        </div>
+      )}
+    <div className="buttons-container">
     <button
-      className="predict-btn"
-      onClick={handlePredictClick}
-      disabled={!selectedFile || isLoading}
-    >
-      {isLoading ? 'Predicting...' : 'Predict'}
-    </button>
-    {prediction && <p className="result">Result: {prediction}</p>}
-  </div>
+        className="predict-btn"
+        onClick={handlePredictClick}
+        disabled={!selectedFile || !selectedPlant || isLoading}
+      >
+        {isLoading ? 'Predicting...' : 'Predict'}
+      </button>
+      {selectedFile && (
+        <button
+        className="clear-btn"
+        onClick={handleClearClick}
+        onMouseEnter={() => handleClearHover(true)}
+        onMouseLeave={() => handleClearHover(false)}
+        title="Clear"
+        >
+        {isClearHovered ? 'Clear' : 'x'}
+      </button>
+      )}
+      
+    </div>
+      {prediction && <p className="result">Result: {prediction}</p>}
+    </div>
   );
 }
 

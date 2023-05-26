@@ -42,29 +42,69 @@ body {
 
 .file-input {
   margin-bottom: 20px;
+  padding: 8px 16px;
+  margin-left: 8px;
+  background-color: rgba(127, 127, 127, 0.3);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .image-container {
   width: 100%;
-  max-height: 300px;
-  overflow: hidden;
+  height: auto;
   margin-bottom: 20px;
+  align-items: center;
 }
 
 .uploaded-image {
   max-width: 100%;
   max-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
+} 
+
+.buttons-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+
+.clear-btn {
+  padding: 8px 16px;
+  margin-left: 8px;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.clear-btn:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.clear-btn:disabled {
+  background-color: rgba(0, 0, 0, 0.2);
+  cursor: not-allowed;
 }
 
 .predict-btn {
   padding: 12px 24px;
   background-color: rgb(0, 153, 51);
+  margin-right: 8px;
   color: #fff;
   border: none;
   cursor: pointer;
   font-size: 18px;
   transition: background-color 0.3s ease-in-out;
+  border-radius: 20px;
 }
 
 .predict-btn:hover {
@@ -81,4 +121,23 @@ body {
   font-weight: bold;
   font-size: 24px;
   color: #333;
+}
+
+.dropdown {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.dropdown select {
+  width: 100%;
+  padding: 12px 24px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #333;
+  border: none;
+  border-radius: 20px;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 16px;
 }
