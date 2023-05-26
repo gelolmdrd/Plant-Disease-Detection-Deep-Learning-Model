@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import * as tf from '@tensorflow/tfjs';
-import { loadLayersModel} from '@tensorflow/tfjs';
+import {loadLayersModel} from '@tensorflow/tfjs';
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -22,7 +22,7 @@ function App() {
 
   const loadModel = async (selectedPlant) => {
     try {
-      const model = await tf.loadLayersModel(`/public/models/${selectedPlant}_Model.h5`);
+      const model = await loadLayersModel(`/public/models/${selectedPlant}_Model.h5`);
       return model;
     } catch (error) {
       console.error('Error occurred while loading the model:', error);
