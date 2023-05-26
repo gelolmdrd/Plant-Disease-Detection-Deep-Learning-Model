@@ -4,6 +4,9 @@ from keras.models import load_model
 import numpy as np
 from PIL import Image, ImageOps
 
+@st.cache_resource
+
+
 def load_model(model_path):
     model = tf.keras.models.load_model(model_path)
     return model
