@@ -28,7 +28,7 @@ model_paths = {
 }
 
 # Load default model for initialization
-default_model_path = 'Tomato_Model.h5'
+default_model_path = './model/Tomato_Model.h5'
 model = load_model(default_model_path)
 
 # Define class labels for plant diseases
