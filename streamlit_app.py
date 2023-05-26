@@ -4,9 +4,30 @@ from keras.models import load_model
 import numpy as np
 from PIL import Image, ImageOps
 
-@st.cache_resource
+# Set page configuration with background image and gradient
+st.set_page_config(
+    page_title="Plant Disease Detection",
+    page_icon="🌿",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
 
+# Define CSS for background image and gradient
+css = """
+body {
+    background-image: url('./assets/leaf-bg.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-image: linear-gradient(rgba(0, 153, 51, 0.2), rgba(255, 255, 255, 0.2));
+    background-size: cover; /* Adjust the percentage as desired */
+    background-position: center;
+}
+"""
 
+# Apply CSS to Streamlit
+st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+
+@st.cache(allow_output_mutation=True)
 def load_model(model_path):
     model = tf.keras.models.load_model(model_path)
     return model
@@ -40,7 +61,8 @@ class_names = {
 
 
 st.write("# Plant Disease Detection")
-st.write("### By Your Name")
+st.write("### CPE 019 - Emerging Technologies in CpE 3")
+st.write("Baltazar, Rendell Jay; Jarabejo, Joshua; La Madrid, Angelo H.")
 
 # Allow the user to select the plant type
 plant_type = st.selectbox("Select Plant Type", ('tomato', 'cotton', 'potato'))
