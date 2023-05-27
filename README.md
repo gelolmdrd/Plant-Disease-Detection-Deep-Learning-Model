@@ -1,4 +1,4 @@
-# CPE 019 - Emerging Technologies in CpE 3
+# CPE 019 - Emerging Technologies 2 in CpE
 
 Submitted By <br>
 Baltazar, Rendell Jay; Jarabejo, Joshua; La Madrid, Angelo H. <br>
