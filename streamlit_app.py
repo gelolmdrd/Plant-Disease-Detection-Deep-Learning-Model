@@ -27,11 +27,6 @@ body {
 # Apply CSS to Streamlit
 st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
-@st.cache_resource
-
-def load_model(model_path):
-    model = tf.keras.models.load_model(model_path)
-    return model
 
 def import_and_predict(image_data, model):
     size = (256, 256)
@@ -42,16 +37,13 @@ def import_and_predict(image_data, model):
     prediction = model.predict(image_reshape)
     return prediction
 
+
 # Define model paths for different plant types
 model_paths = {
     'tomato': './model/Tomato_Model.h5',
     'cotton': './model/Cotton_Model.h5',
     'potato': './model/Potato_Model.h5'
 }
-
-# Load default model for initialization
-default_model_path = './model/Tomato_Model.h5'
-model = load_model(default_model_path)
 
 # Define class labels for plant diseases
 class_names = {
@@ -82,23 +74,25 @@ else:
         else:
             st.text("Invalid plant type")
 
-        image = Image.open(file) if file else None
-        if image:
-            st.image(image, use_column_width=True)
-            prediction = import_and_predict(image, model)
-            class_labels = class_names.get(plant_type)
-            if class_labels:
-                class_index = np.argmax(prediction)
-                class_name = class_labels.get(class_index)
-                if class_name:
-                    string = f"The {plant_type} is {class_index} {class_name} "
-                    st.success(string)
+        # Proceed only if the model is successfully loaded
+        if model is not None:
+            image = Image.open(file) if file else None
+            if image:
+                st.image(image, use_column_width=True)
+                prediction = import_and_predict(image, model)
+                class_labels = class_names.get(plant_type)
+                if class_labels:
+                    class_index = np.argmax(prediction)
+                    class_name = class_labels.get(class_index)
+                    if class_name:
+                        string = f"The {plant_type} is {class_index} {class_name} "
+                        st.success(string)
+                    else:
+                        st.text("Invalid class index")
                 else:
-                    st.text("Invalid class index")
+                    st.text("Invalid class labels for the selected plant type")
             else:
-                st.text("Invalid class labels for the selected plant type")
-        else:
-            st.text("Invalid file. Please upload a valid image file.")
+                st.text("Invalid file. Please upload a valid image file.")
     except Exception as e:
         st.text("Error occurred while processing the image.")
         st.text(str(e))
