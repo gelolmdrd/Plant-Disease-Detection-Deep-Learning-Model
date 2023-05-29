@@ -44,9 +44,9 @@ def import_and_predict(image_data, model):
 
 # Define model paths for different plant types
 model_paths = {
-    'tomato': '/model/Tomato_Model.h5',
-    'cotton': '/model/Cotton_Model.h5',
-    'potato': '/model/Potato_Model.h5'
+    'tomato': './model/Tomato_Model.h5',
+    'cotton': './model/Cotton_Model.h5',
+    'potato': './model/Potato_Model.h5'
 }
 
 # Load default model for initialization
