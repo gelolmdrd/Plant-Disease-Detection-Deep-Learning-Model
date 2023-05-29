@@ -35,7 +35,7 @@ def load_model(model_path):
 
 def import_and_predict(image_data, model):
     size = (256, 256)
-    image = ImageOps.fit(image_data, size, Image.ANTIALIAS)
+    image = ImageOps.fit(image_data, size, Image.Resampling.LANCZOS)
     image = np.asarray(image)
     image = image / 255.0
     image_reshape = np.reshape(image, (1, 256, 256, 3))
