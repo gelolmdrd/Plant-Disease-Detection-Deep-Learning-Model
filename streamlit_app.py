@@ -89,7 +89,7 @@ else:
                 class_index = np.argmax(prediction)
                 class_name = class_labels.get(class_index)
                 if class_name:
-                    string = f"The {plant_type} is {class_index} {class_name} "
+                    string = f"The {plant_type} plant is {class_name} "
                     st.success(string)
                 else:
                     st.text("Invalid class index")
