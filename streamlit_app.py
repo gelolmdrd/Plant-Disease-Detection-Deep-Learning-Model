@@ -44,13 +44,13 @@ def import_and_predict(image_data, model):
 
 # Define model paths for different plant types
 model_paths = {
-    'tomato': './model/Tomato_Model.h5',
-    'cotton': './model/Cotton_Model.h5',
-    'potato': './model/Potato_Model.h5'
+    'tomato': './model/og model/Tomato_Model.h5',
+    'cotton': './model/og model/Cotton_Model.h5',
+    'potato': './model/og model/Potato_Model.h5'
 }
 
 # Load default model for initialization
-default_model_path = 'model/Tomato_Model.h5'
+default_model_path = './model/og model/Tomato_Model.h5'
 model = load_model(default_model_path)
 
 # Define class labels for plant diseases
