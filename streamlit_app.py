@@ -36,7 +36,7 @@ def import_and_predict(image_data, model):
     size = (256, 256)
     image = ImageOps.fit(image_data, size, Image.Resampling.LANCZOS)
     image = np.asarray(image)
-    image = image / 255.0
+    image = image.astype('float32') / 255.0  # Normalize the image
     image_reshape = np.reshape(image, (1, 256, 256, 3))
     prediction = model.predict(image_reshape)
     return prediction
