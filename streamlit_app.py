@@ -27,7 +27,8 @@ body {
 # Apply CSS to Streamlit
 st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
-@st.cache_resource(allow_output_mutation=True)
+@st.cache_resource
+
 def load_model(model_path):
     model = tf.keras.models.load_model(model_path)
     return model
